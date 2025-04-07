@@ -1,0 +1,4 @@
+:root {
+    --lumo-primary-color: #4E9D2D !important; /* Verandert de standaard blauwe kleur naar groen */
+    --lumo-primary-text-color: #4E9D2D !important; /* Zorgt ervoor dat tekst en indicatoren groen worden */
+}
