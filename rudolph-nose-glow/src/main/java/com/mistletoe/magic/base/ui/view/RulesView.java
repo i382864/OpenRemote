@@ -10,24 +10,77 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.theme.lumo.LumoUtility;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 
-@Route("rules")
+@Route(value = "rules", layout = MainLayout.class)
 @PageTitle("Rules")
 public class RulesView extends Div {
+    private final Grid<String> ruleList;
+
     public RulesView() {
         setSizeFull();
+
+        // Left side with grid
+        VerticalLayout leftSide = new VerticalLayout();
+        leftSide.setWidth("300px");
+        leftSide.setPadding(false);
+        leftSide.setSpacing(false);
         
-        // Sidebar - List of rules
-        Grid<String> ruleList = new Grid<>();
+        // Add blue header
+        HorizontalLayout header = new HorizontalLayout();
+        header.setWidthFull();
+        header.setHeight("48px");
+        header.setPadding(true);
+        header.setSpacing(true);
+        header.setAlignItems(Alignment.CENTER);
+        header.getStyle()
+            .set("background-color", "var(--lumo-primary-color)")
+            .set("padding", "0 var(--lumo-space-m)");
+
+        H3 title = new H3("Rules");
+        title.getStyle()
+            .set("color", "var(--lumo-base-color)")
+            .set("font-size", "var(--lumo-font-size-l)")
+            .set("font-weight", "500")
+            .set("margin", "0");
+
+        // Create icons
+        Icon duplicateIcon = VaadinIcon.COPY.create();
+        Icon deleteIcon = VaadinIcon.TRASH.create();
+        Icon addIcon = VaadinIcon.PLUS.create();
+        Icon menuIcon = VaadinIcon.MENU.create();
+
+        // Style all icons
+        for (Icon icon : new Icon[]{duplicateIcon, deleteIcon, addIcon, menuIcon}) {
+            icon.setSize("24px");
+            icon.getStyle()
+                .set("color", "var(--lumo-base-color)")
+                .set("margin-left", "var(--lumo-space-s)")
+                .set("cursor", "pointer");
+        }
+
+        // Create icons container
+        HorizontalLayout icons = new HorizontalLayout(duplicateIcon, deleteIcon, addIcon, menuIcon);
+        icons.setSpacing(false);
+        icons.setAlignItems(Alignment.CENTER);
+        icons.getStyle().set("margin-left", "auto");
+
+        header.add(title, icons);
+        leftSide.add(header);
+
+        // Initialize grid
+        ruleList = new Grid<>();
         ruleList.addColumn(String::toString).setHeader("Rules");
-        ruleList.setItems("Irrigation flow total", "Irrigation tank low", "KPI: Flow per m2", "Salinity < 3", "Salinity > 25", "Salinity 20 < 25");
+        ruleList.setItems("Irrigation flow total", "Irrigation tank low", "KPI: Flow per m2", 
+                         "Salinity < 3", "Salinity > 25", "Salinity 20 < 25");
         ruleList.setHeightFull();
-        
-        Button addRuleButton = new Button("+");
-        
-        VerticalLayout sidebar = new VerticalLayout(new Div("Rules"), ruleList, addRuleButton);
-        sidebar.setWidth("300px");
-        sidebar.setHeightFull();
+        ruleList.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
+
+        leftSide.add(ruleList);
 
         // Rule Details Form
         TextField ruleName = new TextField("Rule name*");
@@ -63,8 +116,9 @@ public class RulesView extends Div {
         formLayout.setPadding(true);
         formLayout.setWidth("100%");
         
-        HorizontalLayout mainLayout = new HorizontalLayout(sidebar, formLayout);
+        HorizontalLayout mainLayout = new HorizontalLayout(leftSide, formLayout);
         mainLayout.setSizeFull();
+        mainLayout.setSpacing(false);
 
         add(mainLayout);
     }
