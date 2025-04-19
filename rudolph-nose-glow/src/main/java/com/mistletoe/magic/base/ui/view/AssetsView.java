@@ -4,6 +4,7 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.map.Assets.Asset;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -25,6 +26,21 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.dependency.StyleSheet;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map; // Needed for generic JSON parsing
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.ArrayList;
+import java.util.List; // Good practice to use the interface type
+
+import java.util.Objects;
 
 @Route(value = "assets", layout = MainLayout.class)
 @PageTitle("Assets")
@@ -35,8 +51,11 @@ public class AssetsView extends HorizontalLayout {
     private final TreeDataProvider<AssetItem> dataProvider;
     private final TextField filterField;
     private final VerticalLayout detailsLayout;
+    private List<AssetItem> myAssets;
 
     public AssetsView() {
+        myAssets = new ArrayList<>();
+        
         setSizeFull();
         setPadding(false);
         setSpacing(false);
@@ -418,9 +437,65 @@ public class AssetsView extends HorizontalLayout {
         items.add(highTech);
         items.add(simulator);
 
+        String apiUrl = "http://34.29.191.54/asset";
+        ObjectMapper objectMapper = new ObjectMapper(); // Jackson JSON mapper
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl))
+                .header("Accept", "application/json")
+                .GET()
+                .build();
+
+        try {
+            // Send request and get response (synchronous/blocking)
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                String responseBody = response.body();
+                // Parse JSON into a List of Maps (String key, Object value)
+                // This avoids creating a dedicated class like ApiAsset
+                List<Map<String, Object>> apiDataList = objectMapper.readValue(responseBody,
+                        new TypeReference<List<Map<String, Object>>>() {});
+
+                // Process the data from the API
+                for (Map<String, Object> apiData : apiDataList) {
+                    // Extract the 'name' field
+                    Object nameValue = apiData.get("name");
+                    if (nameValue instanceof String) { // Check if 'name' exists and is a String
+                        String name = (String) nameValue;
+                        if (!name.isEmpty()) {
+                            // Create a new AssetItem and add it directly to the main list
+                            items.add(new AssetItem(name));
+                        }
+                    } else {
+                         System.err.println("API item found without a valid 'name' string: " + apiData);
+                    }
+                }
+                System.out.println("Successfully fetched and added " + (apiDataList != null ? apiDataList.size() : 0) + " items from API.");
+
+            } else {
+                // Handle non-200 responses
+                System.err.println("Error fetching data from API. Status code: " + response.statusCode());
+                // Consider logging response.body() for debugging if needed
+            }
+
+        } catch (JsonProcessingException e) {
+            System.err.println("Error parsing JSON response from API: " + e.getMessage());
+        } catch (IOException | InterruptedException e) {
+            // Handle network errors or interruption
+            System.err.println("Error during API call: " + e.getMessage());
+            // Restore interrupt status if needed
+             Thread.currentThread().interrupt();
+        } catch (Exception e) {
+            // Catch any other unexpected errors
+            System.err.println("An unexpected error occurred while fetching API data: " + e.getMessage());
+        }
+        // --- END OF NEW CODE BLOCK ---
+
         return items;
     }
 
+    
     public static class AssetItem {
         private final String name;
         private final List<AssetItem> children = new ArrayList<>();
