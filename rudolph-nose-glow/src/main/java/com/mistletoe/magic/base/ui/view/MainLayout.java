@@ -43,10 +43,11 @@ public final class MainLayout extends AppLayout implements BeforeEnterObserver {
 
         Tab mapTab = new Tab(new RouterLink("Map", MapView.class));
         Tab assetsTab = new Tab(new RouterLink("Assets", AssetsView.class));
-        Tab rulesTab = new Tab(new RouterLink("Rules", RulesView.class));
+        Tab testTab = new Tab(new RouterLink("Rules", TestPage.class));
+        //Tab rulesTab = new Tab(new RouterLink("Rules", RulesView.class));
         Tab insightsTab = new Tab(new RouterLink("Insights", InsightsView.class));
 
-        Tabs menuTabs = new Tabs(mapTab, assetsTab, rulesTab, insightsTab);
+        Tabs menuTabs = new Tabs(mapTab, assetsTab, testTab, insightsTab);
         menuTabs.getStyle().set("margin-right", "auto");
 
         Icon bellIcon = VaadinIcon.BELL.create();

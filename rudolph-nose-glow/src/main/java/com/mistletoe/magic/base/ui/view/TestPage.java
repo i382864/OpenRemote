@@ -44,18 +44,18 @@ import java.util.List; // Good practice to use the interface type
 
 import java.util.Objects;
 
-@Route(value = "assets", layout = MainLayout.class)
-@PageTitle("Assets")
+@Route(value = "test", layout = MainLayout.class)
+@PageTitle("test")
 @JavaScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js")
 @StyleSheet("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css")
-public class AssetsView extends HorizontalLayout {
+public class TestPage extends HorizontalLayout {
     private final TreeGrid<AssetItem> tree;
     private final TreeDataProvider<AssetItem> dataProvider;
     private final TextField filterField;
     private final VerticalLayout detailsLayout;
     private List<AssetItem> rootItems;
 
-    public AssetsView() {
+    public TestPage() {
         
         setSizeFull();
         setPadding(false);
@@ -106,7 +106,7 @@ public class AssetsView extends HorizontalLayout {
         // Initialize tree grid
         tree = new TreeGrid<>();
         tree.addHierarchyColumn(AssetItem::getName)
-            .setHeader("Assets")
+            .setHeader("Rules")
             .setFlexGrow(1);
 
         tree.setHeightFull();
@@ -180,57 +180,21 @@ public class AssetsView extends HorizontalLayout {
         leftContent.setWidth("50%");
 
         // INFO Section
-        addSection(leftContent, "INFO");
-        TextArea notes = new TextArea();
-        notes.setLabel("Notes");
-        notes.setWidthFull();
-        notes.setHeight("200px");
-        notes.getStyle()
-            .set("background-color", "var(--lumo-contrast-5pct)")
-            .set("border-radius", "var(--lumo-border-radius-m)");
-        notes.setValue(summarizeAssetItem(item));  // <- Add this line
+        // addSection(leftContent, "When");
+        // TextArea notes = new TextArea();
+        // notes.setLabel("Notes");
+        // notes.setWidthFull();
+        // notes.setHeight("200px");
+        // notes.getStyle()
+        //     .set("background-color", "var(--lumo-contrast-5pct)")
+        //     .set("border-radius", "var(--lumo-border-radius-m)");
+        // notes.setValue(summarizeAssetItem(item));  // <- Add this line
 
-        addFieldWithTimestamp(leftContent, notes);
+        //addFieldWithTimestamp(leftContent, notes);
 
         // ATTRIBUTES Section
         addSection(leftContent, "ATTRIBUTES");
         createDynamicFields(item, leftContent);
-
-        // TextField assetName = createTextField("Name", item.name, false);
-        // addFieldWithTimestamp(leftContent, assetName);
-
-        // TextField assetType = createTextField("Asset Type", item.asset_type != null ? item.asset_type.toString() : "", false);
-        // addFieldWithTimestamp(leftContent, assetType);
-
-        // TextField assetAssetId = createTextField("Asset ID", item.asset_id != null ? item.asset_id.toString() : "", false);
-        // addFieldWithTimestamp(leftContent, assetAssetId);
-
-        // TextField assetCountry = createTextField("Country", item.country != null ? item.country : "", false);
-        // addFieldWithTimestamp(leftContent, assetCountry);
-
-        // TextField assetLocation = createTextField("Location", item.location != null ? item.location : "", false);
-        // addFieldWithTimestamp(leftContent, assetLocation);
-
-        // TextArea assetNotes = createTextArea("Notes", item.notes != null ? item.notes : "", false);
-        // addFieldWithTimestamp(leftContent, assetNotes);
-
-        // TextField assetCity = createTextField("City", item.city != null ? item.city : "", false);
-        // addFieldWithTimestamp(leftContent, assetCity);
-
-        // TextField assetEmail = createTextField("Email", item.email != null ? item.email : "", false);
-        // addFieldWithTimestamp(leftContent, assetEmail);
-
-        // TextField assetManufacturer = createTextField("Manufacturer", item.manufacturer != null ? item.manufacturer : "", false);
-        // addFieldWithTimestamp(leftContent, assetManufacturer);
-
-        // TextField assetModel = createTextField("Model", item.model != null ? item.model : "", false);
-        // addFieldWithTimestamp(leftContent, assetModel);
-
-        // TextField assetRegion = createTextField("Region", item.region != null ? item.region : "", false);
-        // addFieldWithTimestamp(leftContent, assetRegion);
-
-        // TextField assetTags = createTextField("Tags", item.tags != null ? item.tags : "", false);
-        // addFieldWithTimestamp(leftContent, assetTags);
 
         // Right side - LOCATION
         VerticalLayout rightContent = new VerticalLayout();
@@ -239,78 +203,8 @@ public class AssetsView extends HorizontalLayout {
         rightContent.setWidth("50%");
 
         // LOCATION Section
-        addSection(rightContent, "LOCATION");
-        Div map = new Div();
-        map.setId("assetMap"); // Give the map div a specific ID
-        map.setHeight("400px");
-        map.setWidthFull();
-        map.getStyle()
-            .set("border-radius", "var(--lumo-border-radius-m)")
-            .set("margin-bottom", "var(--lumo-space-m)");
-        rightContent.add(map);
-
-        // Initialize the map using JavaScript
-        map.getElement().executeJs("""
-        // Generate random latitude and longitude within a range
-        function getRandomCoordinate(min, max) {
-            return (Math.random() * (max - min) + min);
-        }
-
-        // Randomize the coordinates (latitude between 40 and 60, longitude between -10 and 10)
-        const randomLat = getRandomCoordinate(40, 60);  // Random latitude between 40 and 60
-        const randomLon = getRandomCoordinate(-10, 10);  // Random longitude between -10 and 10
-        
-        const map = L.map('assetMap', {
-            zoomControl: false  // Disable default zoom control
-        }).setView([randomLat, randomLon], 13);  // Use randomized coordinates for initial view
-
-        // Use CartoDB Positron style for a cleaner look
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '©OpenStreetMap, ©CartoDB',
-            subdomains: 'abcd',
-            maxZoom: 19
-        }).addTo(map);
-
-        // Add custom positioned zoom control
-        L.control.zoom({
-            position: 'topright'
-        }).addTo(map);
-
-        // Add scale control at the bottom
-        L.control.scale().addTo(map);
-        
-        // Add custom CSS for zoom controls
-        const style = document.createElement('style');
-        style.textContent = `
-            .leaflet-control-zoom {
-                border: none !important;
-                margin-right: 10px !important;
-            }
-            .leaflet-control-zoom a {
-                background-color: white !important;
-                color: #666 !important;
-                width: 30px !important;
-                height: 30px !important;
-                line-height: 30px !important;
-                border: 1px solid #ccc !important;
-                border-radius: 4px !important;
-                margin-bottom: 5px !important;
-            }
-            .leaflet-control-zoom a:hover {
-                background-color: #f4f4f4 !important;
-                color: #333 !important;
-            }
-            .leaflet-control-zoom-in {
-                margin-bottom: 5px !important;
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Update map size when container size changes
-        setTimeout(function() {
-            map.invalidateSize();
-        }, 100);
-    """);
+        addSection(rightContent, "Then");
+        createThenFields(item, rightContent);
 
         // Add left and right content to main layout
         mainContent.add(leftContent, rightContent);
@@ -454,8 +348,8 @@ public class AssetsView extends HorizontalLayout {
         // AssetItem simulator = new AssetItem("Simulator");
 
         // Add child items to Consoles
-        //consoles.addChild(new AssetItem("Chrome"));
-        //consoles.addChild(new AssetItem("Chrome"));
+        // consoles.addChild(new AssetItem("Chrome"));
+        // consoles.addChild(new AssetItem("Chrome"));
         // consoles.addChild(new AssetItem("Firefox"));
         // consoles.addChild(new AssetItem("Safari"));
 
@@ -474,7 +368,7 @@ public class AssetsView extends HorizontalLayout {
         // items.add(highTech);
         // items.add(simulator);
 
-        String apiUrl = "http://34.29.191.54/asset";
+        String apiUrl = "https://s6-service-rule-1.onrender.com/rules";
         ObjectMapper objectMapper = new ObjectMapper(); // Jackson JSON mapper
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -497,25 +391,19 @@ public class AssetsView extends HorizontalLayout {
                 // Process the data from the API
                 for (Map<String, Object> apiData : apiDataList) {
                     // Extract the 'name' field
-                    Object nameValue = apiData.get("name");
+                    Object nameValue = apiData.get("asset_name");
                     if (nameValue instanceof String) { // Check if 'name' exists and is a String
                         String name = (String) nameValue;
                         if (!name.isEmpty()) {
                             // Create a new AssetItem and add it directly to the main list
                             AssetItem item = new AssetItem(name);
-                            item.id = (List<Integer>) apiData.get("id");
-                            item.parent = null; // assuming no parent object is resolved from API
-                            item.asset_type = (Boolean) apiData.get("asset_type");
                             item.asset_id = (Integer) apiData.get("asset_id");
-                            item.country = (String) apiData.get("country");
-                            item.location = (String) apiData.get("location");
-                            item.notes = (String) apiData.get("notes");
-                            item.city = (String) apiData.get("city");
-                            item.email = (String) apiData.get("email");
-                            item.manufacturer = (String) apiData.get("manufacturer");
-                            item.model = (String) apiData.get("model");
-                            item.region = (String) apiData.get("region");
-                            item.tags = (String) apiData.get("tags");
+                            item.asset_type = (Boolean) apiData.get("asset_type");
+                            item.when_attribute = (String) apiData.get("when_attribute");
+                            item.when_operator = (String) apiData.get("when_operator");
+                            item.when_value = (String) apiData.get("when_value");
+                            item.then_attribute = (String) apiData.get("then_attribute");
+                            item.then_value = (String) apiData.get("then_value");
 
                             items.add(item);
                         }
@@ -549,19 +437,13 @@ public class AssetsView extends HorizontalLayout {
 
     public static class AssetItem {
         private final String name;
-        public List<Integer> id;
-        public AssetItem parent;
-        public Boolean asset_type;
-        public Integer asset_id;
-        public String country;
-        public String location;
-        public String notes;
-        public String city;
-        public String email;
-        public String manufacturer;
-        public String model;
-        public String region;
-        public String tags;
+        public Integer asset_id;  // Nullable Integer
+        public Boolean asset_type; // Nullable Boolean
+        public String when_attribute; // Nullable String
+        public String when_operator; // Nullable String
+        public String when_value; // Nullable String
+        public String then_attribute; // Nullable String
+        public String then_value; // Nullable String
         public final List<AssetItem> children = new ArrayList<>();
 
         public AssetItem(String name) {
@@ -584,65 +466,66 @@ public class AssetsView extends HorizontalLayout {
     public static String summarizeAssetItem(AssetItem item) {
         StringBuilder summary = new StringBuilder();
     
-        summary.append("This asset is called ").append(item.name).append(".");
-    
+        summary.append("This rule is related to asset: ").append(item.name).append(".");
+
         if (item.asset_type != null) {
-            summary.append(" Its type flag is set to ").append(item.asset_type).append(".");
+            summary.append(" The asset type is ").append(item.asset_type).append(".");
         }
     
         if (item.asset_id != null) {
-            summary.append(" It has an ID of ").append(item.asset_id).append(".");
+            summary.append(" Asset ID is ").append(item.asset_id).append(".");
         }
     
-        if (item.country != null) {
-            summary.append(" It is located in ").append(item.country);
-            if (item.city != null) {
-                summary.append(", specifically in ").append(item.city);
-            }
-            if (item.location != null) {
-                summary.append(" at ").append(item.location);
-            }
-            summary.append(".");
-        }
-    
-        if (item.notes != null) {
-            summary.append(" Notes: ").append(item.notes).append(".");
-        }
-    
-        if (item.email != null) {
-            summary.append(" You can contact the responsible party at ").append(item.email).append(".");
-        }
-    
-        if (item.manufacturer != null || item.model != null) {
-            summary.append(" This asset was manufactured by ").append(item.manufacturer != null ? item.manufacturer : "an unknown company");
-            if (item.model != null) {
-                summary.append(", model ").append(item.model);
-            }
-            summary.append(".");
-        }
-    
-        if (item.region != null) {
-            summary.append(" It belongs to the ").append(item.region).append(" region.");
-        }
-    
-        if (item.tags != null) {
-            summary.append(" Tagged with: ").append(item.tags).append(".");
+        if (item.when_attribute != null && item.when_operator != null && item.when_value != null) {
+            summary.append(" When ").append(item.when_attribute)
+                   .append(" ").append(item.when_operator)
+                   .append(" ").append(item.when_value).append(",");
         }
     
         return summary.toString();
     }
 
+    public static class Rule {
+        // All properties are nullable and public
+        public Integer asset_id;  // Nullable Integer
+        public String asset_name; // Nullable String
+        public Boolean asset_type; // Nullable Boolean
+        public String when_attribute; // Nullable String
+        public String when_operator; // Nullable String
+        public String when_value; // Nullable String
+        public String then_attribute; // Nullable String
+        public String then_value; // Nullable String
+    
+        // Constructor
+        public Rule(String asset_name) {
+            this.asset_name = asset_name;
+        }
+
+        public String getName() {
+            return asset_name;
+        }
+    }
+
     public void createDynamicFields(Object item, VerticalLayout leftContent) {
-        // Get all fields from the AssetItem class
+        // Get all fields from the item's class
         Field[] fields = item.getClass().getDeclaredFields();
     
         // Loop through all fields and create text fields dynamically
         for (Field field : fields) {
             field.setAccessible(true);  // Make private fields accessible
-            
+    
+            String fieldName = field.getName();
+    
+            // Skip 'then_attribute' and 'then_value'
+            if ("then_attribute".equals(fieldName) || "then_value".equals(fieldName) 
+            || "asset_id".equals(fieldName) || "name".equals(fieldName) || "asset_type".equals(fieldName) || "children".equals(fieldName)
+
+            ) {
+                continue;
+            }
+    
             try {
-                // Get field name and value
-                String fieldName = field.getName();
+                // Get field value
                 Object fieldValue = field.get(item);
     
                 // Create text field or text area based on the field type
@@ -650,29 +533,55 @@ public class AssetsView extends HorizontalLayout {
                 String fieldValueString = fieldValue != null ? fieldValue.toString() : "";
     
                 if (field.getType().equals(String.class)) {
-                    // Create TextField for String fields
                     TextField textField = createTextField(fieldLabel, fieldValueString, false);
                     addFieldWithTimestamp(leftContent, textField);
                 } else if (field.getType().equals(Boolean.class)) {
-                    // Create TextField for Boolean fields
                     TextField textField = createTextField(fieldLabel, fieldValueString, false);
                     addFieldWithTimestamp(leftContent, textField);
                 } else if (field.getType().equals(Integer.class)) {
-                    // Create TextField for Integer fields
                     TextField textField = createTextField(fieldLabel, fieldValueString, false);
                     addFieldWithTimestamp(leftContent, textField);
                 } else if (field.getType().equals(List.class)) {
-                    // Create TextArea for List fields (for example, tags)
                     TextArea textArea = createTextArea(fieldLabel, fieldValueString, false);
                     addFieldWithTimestamp(leftContent, textArea);
                 }
-                // Add more cases as needed for other types like Date, Long, etc.
+    
             } catch (IllegalAccessException e) {
                 e.printStackTrace(); // Handle any reflection exceptions
             }
         }
     }
     
+    public void createThenFields(Object item, VerticalLayout leftContent) {
+        // Get all fields from the item's class
+        Field[] fields = item.getClass().getDeclaredFields();
+    
+        // Loop through all fields and create components for "then" fields only
+        for (Field field : fields) {
+            field.setAccessible(true);
+            String fieldName = field.getName();
+    
+            // Only include 'then_attribute' and 'then_value'
+            if (!"then_attribute".equals(fieldName) && !"then_value".equals(fieldName)) {
+                continue;
+            }
+    
+            try {
+                Object fieldValue = field.get(item);
+                String fieldLabel = capitalizeFirstLetter(fieldName);
+                String fieldValueString = fieldValue != null ? fieldValue.toString() : "";
+    
+                if (field.getType().equals(String.class)) {
+                    TextField textField = createTextField(fieldLabel, fieldValueString, false);
+                    addFieldWithTimestamp(leftContent, textField);
+                }
+    
+            } catch (IllegalAccessException e) {
+                e.printStackTrace(); // Handle reflection errors
+            }
+        }
+    }
+
     // Utility method to capitalize the first letter of a string
     private String capitalizeFirstLetter(String str) {
         if (str == null || str.isEmpty()) {
