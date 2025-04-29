@@ -474,7 +474,8 @@ public class AssetsView extends HorizontalLayout {
         // items.add(highTech);
         // items.add(simulator);
 
-        String apiUrl = "http://34.29.191.54/asset";
+        String apiUrl = "https://s6-api-gateway.onrender.com/assets";
+        //String apiUrl = "http://34.29.191.54/asset";
         ObjectMapper objectMapper = new ObjectMapper(); // Jackson JSON mapper
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -503,7 +504,7 @@ public class AssetsView extends HorizontalLayout {
                         if (!name.isEmpty()) {
                             // Create a new AssetItem and add it directly to the main list
                             AssetItem item = new AssetItem(name);
-                            item.id = (List<Integer>) apiData.get("id");
+                            //item.id = (List<Integer>) apiData.get("id");
                             item.parent = null; // assuming no parent object is resolved from API
                             item.asset_type = (Boolean) apiData.get("asset_type");
                             item.asset_id = (Integer) apiData.get("asset_id");

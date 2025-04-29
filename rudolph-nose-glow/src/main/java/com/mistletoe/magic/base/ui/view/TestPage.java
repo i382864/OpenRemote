@@ -1,6 +1,5 @@
 package com.mistletoe.magic.base.ui.view;
 import java.lang.reflect.Field;
-
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -368,7 +367,7 @@ public class TestPage extends HorizontalLayout {
         // items.add(highTech);
         // items.add(simulator);
 
-        String apiUrl = "https://s6-service-rule-1.onrender.com/rules";
+        String apiUrl = "https://s6-api-gateway.onrender.com/rules";
         ObjectMapper objectMapper = new ObjectMapper(); // Jackson JSON mapper
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
