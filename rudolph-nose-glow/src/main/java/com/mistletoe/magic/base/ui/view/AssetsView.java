@@ -298,7 +298,7 @@ public class AssetsView extends HorizontalLayout {
         populateInfoAndAttributesColumn(infoColumnRight);
 
         // Add all three columns to main content area
-        mainContent.add(infoColumnLeft, locationColumnMiddle, infoColumnRight);
+        mainContent.add(infoColumnLeft,infoColumnRight, locationColumnMiddle );
         
         // Distribute space equally among the three columns
         mainContent.setFlexGrow(1, infoColumnLeft);
