@@ -437,63 +437,63 @@ public class AssetsView extends HorizontalLayout {
         items.add(highTech);
         items.add(simulator);
 
-        String apiUrl = "http://34.29.191.54/asset";
-        ObjectMapper objectMapper = new ObjectMapper(); // Jackson JSON mapper
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(apiUrl))
-                .header("Accept", "application/json")
-                .GET()
-                .build();
+    //     String apiUrl = "http://34.29.191.54/asset";
+    //     ObjectMapper objectMapper = new ObjectMapper(); // Jackson JSON mapper
+    //     HttpClient client = HttpClient.newHttpClient();
+    //     HttpRequest request = HttpRequest.newBuilder()
+    //             .uri(URI.create(apiUrl))
+    //             .header("Accept", "application/json")
+    //             .GET()
+    //             .build();
 
-        try {
-            // Send request and get response (synchronous/blocking)
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    //     try {
+    //         // Send request and get response (synchronous/blocking)
+    //         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 200) {
-                String responseBody = response.body();
-                // Parse JSON into a List of Maps (String key, Object value)
-                // This avoids creating a dedicated class like ApiAsset
-                List<Map<String, Object>> apiDataList = objectMapper.readValue(responseBody,
-                        new TypeReference<List<Map<String, Object>>>() {});
+    //         if (response.statusCode() == 200) {
+    //             String responseBody = response.body();
+    //             // Parse JSON into a List of Maps (String key, Object value)
+    //             // This avoids creating a dedicated class like ApiAsset
+    //             List<Map<String, Object>> apiDataList = objectMapper.readValue(responseBody,
+    //                     new TypeReference<List<Map<String, Object>>>() {});
 
-                // Process the data from the API
-                for (Map<String, Object> apiData : apiDataList) {
-                    // Extract the 'name' field
-                    Object nameValue = apiData.get("name");
-                    if (nameValue instanceof String) { // Check if 'name' exists and is a String
-                        String name = (String) nameValue;
-                        if (!name.isEmpty()) {
-                            // Create a new AssetItem and add it directly to the main list
-                            items.add(new AssetItem(name));
-                        }
-                    } else {
-                         System.err.println("API item found without a valid 'name' string: " + apiData);
-                    }
-                }
-                System.out.println("Successfully fetched and added " + (apiDataList != null ? apiDataList.size() : 0) + " items from API.");
+    //             // Process the data from the API
+    //             for (Map<String, Object> apiData : apiDataList) {
+    //                 // Extract the 'name' field
+    //                 Object nameValue = apiData.get("name");
+    //                 if (nameValue instanceof String) { // Check if 'name' exists and is a String
+    //                     String name = (String) nameValue;
+    //                     if (!name.isEmpty()) {
+    //                         // Create a new AssetItem and add it directly to the main list
+    //                         items.add(new AssetItem(name));
+    //                     }
+    //                 } else {
+    //                      System.err.println("API item found without a valid 'name' string: " + apiData);
+    //                 }
+    //             }
+    //             System.out.println("Successfully fetched and added " + (apiDataList != null ? apiDataList.size() : 0) + " items from API.");
 
-            } else {
-                // Handle non-200 responses
-                System.err.println("Error fetching data from API. Status code: " + response.statusCode());
-                // Consider logging response.body() for debugging if needed
-            }
+    //         } else {
+    //             // Handle non-200 responses
+    //             System.err.println("Error fetching data from API. Status code: " + response.statusCode());
+    //             // Consider logging response.body() for debugging if needed
+    //         }
 
-        } catch (JsonProcessingException e) {
-            System.err.println("Error parsing JSON response from API: " + e.getMessage());
-        } catch (IOException | InterruptedException e) {
-            // Handle network errors or interruption
-            System.err.println("Error during API call: " + e.getMessage());
-            // Restore interrupt status if needed
-             Thread.currentThread().interrupt();
-        } catch (Exception e) {
-            // Catch any other unexpected errors
-            System.err.println("An unexpected error occurred while fetching API data: " + e.getMessage());
-        }
-        // --- END OF NEW CODE BLOCK ---
+    //     } catch (JsonProcessingException e) {
+    //         System.err.println("Error parsing JSON response from API: " + e.getMessage());
+    //     } catch (IOException | InterruptedException e) {
+    //         // Handle network errors or interruption
+    //         System.err.println("Error during API call: " + e.getMessage());
+    //         // Restore interrupt status if needed
+    //          Thread.currentThread().interrupt();
+    //     } catch (Exception e) {
+    //         // Catch any other unexpected errors
+    //         System.err.println("An unexpected error occurred while fetching API data: " + e.getMessage());
+    //     }
+    //     // --- END OF NEW CODE BLOCK ---
 
-        return items;
-    }
+    //     return items;
+}
 
     
     public static class AssetItem {
