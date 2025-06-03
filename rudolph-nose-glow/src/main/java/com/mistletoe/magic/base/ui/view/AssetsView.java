@@ -492,7 +492,7 @@ public class AssetsView extends HorizontalLayout {
     //     }
     //     // --- END OF NEW CODE BLOCK ---
 
-    //     return items;
+    return items;
 }
 
     
