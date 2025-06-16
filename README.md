@@ -38,10 +38,9 @@ To get a local copy up and running, follow these simple steps.
 
 1.  **Clone the repository:**
     ```bash
-    git clone <repository_url>
-    cd <repository_directory>
+    git clone https://github.com/i382864/OpenRemote.git
+    cd ./OpenRemote/rudolph-nose-glow
     ```
-    *(Replace `<repository_url>` and `<repository_directory>` with the actual repository details)*
 
 2.  **Run the application:**
     Use the Maven Spring Boot plugin to start the embedded server.
