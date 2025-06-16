@@ -78,11 +78,3 @@ The core design improvement showcased is the introduction of a 3-column layout o
 ## For OpenRemote Stakeholders
 
 This demo is a deliverable from a project team investigating UI framework alternatives and proposing design enhancements for the OpenRemote Manager. It specifically addresses the challenge of improving the desktop experience and serves as a tangible example of implementing a redesigned interface using Vaadin, based on the evaluated design proposals. Your feedback on the design and the framework's capabilities as demonstrated here is highly valued.
-
-## License
-
-[Specify your project's license here, e.g., MIT, Apache 2.0, etc. If you don't have one yet, consider adding one. For example: `Distributed under the MIT License. See LICENSE for more information.`]
-
-## Contact / Team
-
-[Optional: Add contact information or list the team members involved if desired. Example: `This project was developed by [Team Name/Members]. For inquiries, please contact [Email Address or GitHub Usernames].`]
